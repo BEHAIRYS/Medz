@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyD164VPhoMQxjqTPgHs1f5o24aTSqm4QiU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>856505526247</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.medz</string>
+	<key>PROJECT_ID</key>
+	<string>medz-f42ac</string>
+	<key>STORAGE_BUCKET</key>
+	<string>medz-f42ac.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:856505526247:ios:5295a66ca20225b14a3f42</string>
+	<key>DATABASE_URL</key>
+	<string>https://medz-f42ac-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>

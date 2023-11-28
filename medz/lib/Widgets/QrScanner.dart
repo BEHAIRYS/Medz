@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:medz/Screens/medicineInfo.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRCodeScanner extends StatefulWidget {
@@ -18,28 +21,23 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('QR Code Scanner'),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              flex: 5,
-              child: QRView(
-                key: _qrKey,
-                onQRViewCreated: _onQRViewCreated,
-              ),
+    return Expanded(
+      child: Column(
+        children: [
+          Expanded(
+            flex: 5,
+            child: QRView(
+              key: _qrKey,
+              onQRViewCreated: _onQRViewCreated,
             ),
-            const Expanded(
-              flex: 1,
-              child: Center(
-                child: Text('Scan a QR code'),
-              ),
+          ),
+          const Expanded(
+            flex: 1,
+            child: Center(
+              child: Text('Scan a QR code'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -50,6 +48,8 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       _controller.scannedDataStream.listen((scanData) {
         print('Scanned data: ${scanData.code}');
         // Handle the scanned data as desired
+        json.decode(scanData.code!);
+        //MedicineInfo(med: med);
       });
     });
   }

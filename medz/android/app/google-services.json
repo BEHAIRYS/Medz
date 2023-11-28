@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "856505526247",
+    "firebase_url": "https://medz-f42ac-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "medz-f42ac",
+    "storage_bucket": "medz-f42ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856505526247:android:f9dafa9296ea65204a3f42",
+        "android_client_info": {
+          "package_name": "com.example.medz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMaN_xvf0_Rh96VhTEfQ00dyYPkXdoslM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
