@@ -36,7 +36,7 @@ class MedicineInfo extends StatelessWidget {
       'Time to wake up!', // Notification body
       _nextInstanceOfAlarm(
         DateTime.now().add(
-          const Duration(seconds: 5),
+          const Duration(seconds: 15),
         ),
       ),
       await notificationDetails(),
@@ -58,7 +58,7 @@ class MedicineInfo extends StatelessWidget {
     print('Now: $now');
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(
-        const Duration(seconds: 5),
+        const Duration(seconds: 20),
       );
     }
     print('Scheduled Date: $scheduledDate');

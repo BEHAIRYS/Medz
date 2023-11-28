@@ -6,7 +6,6 @@ import 'package:medz/Screens/loadingScreen.dart';
 import 'package:medz/Screens/mainScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:timezone/standalone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;

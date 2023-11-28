@@ -10,12 +10,13 @@ class QRCodeScanner extends StatefulWidget {
 }
 
 class _QRCodeScannerState extends State<QRCodeScanner> {
-  late QRViewController _controller;
+  QRViewController? _controller;
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 
@@ -31,10 +32,12 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
               onQRViewCreated: _onQRViewCreated,
             ),
           ),
-          const Expanded(
+          Expanded(
             flex: 1,
             child: Center(
-              child: Text('Scan a QR code'),
+              child: result != null
+                  ? Text('${result!.code}')
+                  : const Text('Scan a QR code'),
             ),
           ),
         ],
@@ -43,13 +46,10 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      _controller = controller;
-      _controller.scannedDataStream.listen((scanData) {
-        print('Scanned data: ${scanData.code}');
-        // Handle the scanned data as desired
-        json.decode(scanData.code!);
-        //MedicineInfo(med: med);
+    _controller = controller;
+    _controller!.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
       });
     });
   }
