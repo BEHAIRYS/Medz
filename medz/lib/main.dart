@@ -5,10 +5,13 @@ import 'package:medz/Screens/auth.dart';
 import 'package:medz/Screens/loadingScreen.dart';
 import 'package:medz/Screens/mainScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:medz/Screens/medicines.dart';
 import 'firebase_options.dart';
 
 import 'package:timezone/standalone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+
+final colorScheme = ColorScheme.fromSeed(seedColor: Colors.blueAccent);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,8 +35,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: colorScheme,
         useMaterial3: true,
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(
+            color: Color.fromARGB(255, 1, 35, 63),
+          ),
+        ),
       ),
       home: StreamBuilder(
         builder: (context, snapshot) {
@@ -41,7 +50,7 @@ class MyApp extends StatelessWidget {
             return LoadingScreen();
           }
           if (snapshot.hasData) {
-            return const MainScreen();
+            return const Medicines();
           }
           return const AuthScreen();
         },

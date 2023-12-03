@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:medz/Classes/Medicine.dart';
 import 'package:medz/Screens/medicineInfo.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -23,34 +24,53 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(
-        children: [
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: _qrKey,
-              onQRViewCreated: _onQRViewCreated,
+      child: Container(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 5,
+              child: QRView(
+                key: _qrKey,
+                onQRViewCreated: _onQRViewCreated,
+              ),
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: result != null
-                  ? Text('${result!.code}')
-                  : const Text('Scan a QR code'),
+            Expanded(
+              flex: 1,
+              child: Center(
+                child: result != null
+                    ? Text('${result!.code}')
+                    : const Text('Scan a QR code'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
+  _onQRViewCreated(QRViewController controller) {
     _controller = controller;
+    Medicine? newMed;
     _controller!.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+      if (scanData.code != null) {
+        newMed = Medicine.fromJSON(
+          json.decode(
+            scanData.code!,
+          ),
+        );
+        setState(() {
+          result = scanData;
+        });
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return MedicineInfo(med: newMed!);
+            },
+          ),
+        );
+      }
     });
   }
 }

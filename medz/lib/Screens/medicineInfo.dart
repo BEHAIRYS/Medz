@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:medz/Classes/Medicine.dart';
 import 'package:medz/Classes/NotificationService.dart';
+import 'package:medz/Screens/medicines.dart';
+import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class MedicineInfo extends StatelessWidget {
   const MedicineInfo({super.key, required this.med});
   final Medicine med;
+  get doseInterval {
+    double timeInterval = 24 / med.dozes;
+    return timeInterval.toInt();
+  }
+
   static notificationDetails() async {
     print('object');
     return const NotificationDetails(
@@ -22,28 +29,38 @@ class MedicineInfo extends StatelessWidget {
     );
   }
 
-  Future scheduleAlarm() async {
-    // Request notification permissions
+  Future scheduleAlarm(BuildContext context) async {
+    final scheduledDate = _nextInstanceOfAlarm(DateTime.now().add(
+      const Duration(seconds: 15),
+    ));
 
     print('Scheduling alarm...');
-/*
-    return NotificationService.flutterLocalNotificationsPlugin
-        .show(0, 'here', 'body', await notificationDetails());
-*/
-    return NotificationService.flutterLocalNotificationsPlugin.zonedSchedule(
+
+    Future alarm =
+        NotificationService.flutterLocalNotificationsPlugin.zonedSchedule(
       1, // Notification ID
-      'Your Alarm', // Notification title
-      'Time to wake up!', // Notification body
-      _nextInstanceOfAlarm(
-        DateTime.now().add(
-          const Duration(seconds: 15),
-        ),
-      ),
+      'Time to take your meds', // Notification title
+      med.name, // Notification body
+      scheduledDate,
       await notificationDetails(),
 
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
+    Duration interval = scheduledDate.difference(
+      tz.TZDateTime.now(tz.local),
+    );
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'Alarm goes off in ${interval.inHours} hours and ${interval.inMinutes % 60} minutes'),
+        ),
+      );
+    }
+    return alarm;
   }
 
   tz.TZDateTime _nextInstanceOfAlarm(DateTime scheduledTime) {
@@ -58,7 +75,7 @@ class MedicineInfo extends StatelessWidget {
     print('Now: $now');
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(
-        const Duration(seconds: 20),
+        Duration(hours: doseInterval),
       );
     }
     print('Scheduled Date: $scheduledDate');
@@ -68,16 +85,58 @@ class MedicineInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () async {
-              await scheduleAlarm();
-            },
-            child: const Text('Set Alarm'),
-          ),
-        ],
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      body: Container(
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const Text('Medicine Name:'),
+                    Text(med.name),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Expiry Date:'),
+                    Text(med.date),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Number of doses per day:'),
+                    Text(
+                      med.dozes.toString(),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await scheduleAlarm(context);
+                      if (context.mounted) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return Medicines();
+                          }),
+                        );
+                      }
+                    },
+                    child: const Text('Set Reminder'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

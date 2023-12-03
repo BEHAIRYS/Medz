@@ -4,8 +4,6 @@ import 'package:medz/Classes/Medicine.dart';
 import 'package:medz/Screens/medicineInfo.dart';
 import 'package:medz/Widgets/QrScanner.dart';
 
-final _firebase = FirebaseAuth.instance;
-
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
   @override
@@ -18,7 +16,9 @@ class MainScreen_state extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Abohmedz'),
         centerTitle: true,
         actions: [
@@ -44,7 +44,7 @@ class MainScreen_state extends State<MainScreen> {
                   }),
                 );
               },
-              child: Text('MedicineInfo'))
+              child: const Text('MedicineInfo'))
         ],
       ),
     );
