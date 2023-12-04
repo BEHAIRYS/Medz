@@ -37,16 +37,16 @@ class MedicineInfo extends StatelessWidget {
     );
   }
 
-  Future scheduleAlarm(BuildContext context) async {
+  Future scheduleAlarm(BuildContext context, int medKey) async {
     final scheduledDate = _nextInstanceOfAlarm(DateTime.now().add(
-      const Duration(seconds: 15),
+      const Duration(seconds: 2),
     ));
 
     print('Scheduling alarm...');
 
     Future alarm =
         NotificationService.flutterLocalNotificationsPlugin.zonedSchedule(
-      1, // Notification ID
+      medKey, // Notification ID
       'Time to take your meds', // Notification title
       med.name, // Notification body
       scheduledDate,
@@ -98,20 +98,43 @@ class MedicineInfo extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
+        padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3),
+            ),
+          ],
+          color: Theme.of(context).colorScheme.background,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
                 const Text('Medicine Name:'),
-                Text(med.name),
+                Text(
+                  med.name,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
               ],
             ),
             Row(
               children: [
                 const Text('Expiry Date:'),
-                Text(med.date),
+                Text(
+                  med.date,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
               ],
             ),
             Row(
@@ -119,6 +142,9 @@ class MedicineInfo extends StatelessWidget {
                 const Text('Number of doses per day:'),
                 Text(
                   med.dozes.toString(),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -128,11 +154,13 @@ class MedicineInfo extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  await scheduleAlarm(context);
+                  int medKey = await addMedicineForUser(med);
+                  await scheduleAlarm(context, medKey);
+
                   if (context.mounted) {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) {
-                        return Medicines();
+                        return const Medicines();
                       }),
                     );
                   }
@@ -144,5 +172,21 @@ class MedicineInfo extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<int> addMedicineForUser(Medicine medicine) async {
+    DatabaseReference newMedicineRef =
+        _database.child('users').child(user!.uid).child('medicines').push();
+
+    await newMedicineRef.set({
+      'name': medicine.name,
+      'expiryDate': formatter.format(medicine.expiryDate),
+      'dose': medicine.dozes,
+    });
+
+    // Extract the key from the DatabaseReference
+    int medicineKey = newMedicineRef.key.hashCode & 0x7FFFFFFF;
+
+    return medicineKey;
   }
 }

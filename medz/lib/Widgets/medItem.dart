@@ -27,26 +27,28 @@ class _MedItem_state extends State<MedItem> {
                 .copyWith(fontWeight: FontWeight.bold),
           ),
           Row(
-            children: [
-              const Text('Finish before '),
-              Text(widget.med.date),
-            ],
-          ),
-          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Next dose in '),
+              Row(
+                children: [
+                  const Text('Finish before '),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  Text(widget.med.date),
+                ],
+              ),
               Row(
                 children: [
                   const Icon(Icons.medication_outlined),
                   Text(
                     widget.med.dozes.toString(),
                   ),
-                  const Text(' dose left today'),
+                  const Text(' doses everyday'),
                 ],
               ),
             ],
-          )
+          ),
         ],
       ),
     );

@@ -23,7 +23,7 @@ User? user = _firebase.currentUser;
 class _Medicines_state extends State<Medicines> {
   @override
   Widget build(BuildContext context) {
-    final medList = [];
+    final List<Medicine> medList = [];
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       appBar: AppBar(
@@ -78,12 +78,29 @@ class _Medicines_state extends State<Medicines> {
                   child: ListView.builder(
                       itemCount: medList.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 2),
-                          child: Card(
-                            child: MedItem(
-                              med: medList.elementAt(index),
+                        return Dismissible(
+                          key: Key(medList[index].name),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) {
+                            _removeMedicine(medList[index].name);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 1,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 2),
+                            child: Card(
+                              child: MedItem(
+                                med: medList.elementAt(index),
+                              ),
                             ),
                           ),
                         );
@@ -101,5 +118,24 @@ class _Medicines_state extends State<Medicines> {
 
   Stream<DatabaseEvent> getMedicines() {
     return _database.child('users').child(user!.uid).child('medicines').onValue;
+  }
+
+  Future<void> _removeMedicine(String medicineName) async {
+    try {
+      await _database
+          .child('users/${user?.uid}/medicines')
+          .orderByChild('name')
+          .equalTo(medicineName)
+          .once()
+          .then((DatabaseEvent event) {
+        if (event.snapshot.value != null) {
+          var keyToRemove = event.snapshot.key;
+          _database.child('users/${user?.uid}/medicines/$keyToRemove').remove();
+          print('Medicine removed successfully.');
+        }
+      });
+    } catch (error) {
+      print('Error removing medicine: $error');
+    }
   }
 }
