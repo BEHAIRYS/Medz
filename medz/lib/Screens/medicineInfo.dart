@@ -1,14 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:medz/Classes/Medicine.dart';
 import 'package:medz/Classes/NotificationService.dart';
 import 'package:medz/Screens/medicines.dart';
-import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final DatabaseReference _database = FirebaseDatabase.instance.ref();
+
+// Get the current user
+User? user = _auth.currentUser;
 
 class MedicineInfo extends StatelessWidget {
   const MedicineInfo({super.key, required this.med});
   final Medicine med;
+
   get doseInterval {
     double timeInterval = 24 / med.dozes;
     return timeInterval.toInt();
@@ -125,7 +133,8 @@ class MedicineInfo extends StatelessWidget {
                       if (context.mounted) {
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) {
-                            return Medicines();
+                            saveMedicine(med);
+                            return const Medicines();
                           }),
                         );
                       }
@@ -139,5 +148,20 @@ class MedicineInfo extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> saveMedicine(Medicine medicine) async {
+    if (user != null) {
+      await _database
+          .child('users')
+          .child(user!.uid)
+          .child('medicines')
+          .push()
+          .set({
+        'name': medicine.name,
+        'expiryDate': formatter.format(medicine.expiryDate),
+        'dose': medicine.dozes,
+      });
+    }
   }
 }

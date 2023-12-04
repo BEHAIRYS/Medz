@@ -1,8 +1,11 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
 final _firebase = FirebaseAuth.instance;
+final DatabaseReference _database = FirebaseDatabase.instance.ref();
+User? user = _firebase.currentUser;
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -50,6 +53,7 @@ class _AuthScreen_state extends State<AuthScreen> {
           ),
         );
       }
+      _addUserToDatabase(user!);
     }
   }
 
@@ -67,86 +71,118 @@ class _AuthScreen_state extends State<AuthScreen> {
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Container(
-        decoration:
-            BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 7, horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).colorScheme.background,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            children: [
+              Text(
+                'Welcome to Meds App',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
-              margin: const EdgeInsets.all(20),
-              child: Column(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Email Address'),
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                          textCapitalization: TextCapitalization.none,
-                          validator: (value) {
-                            if (value == null ||
-                                value.trim().isEmpty ||
-                                !value.contains('@')) {
-                              return 'Please enter valid email address';
-                            }
-                          },
-                          onSaved: (newValue) {
-                            enteredEmail = newValue!;
-                          },
-                        ),
-                        TextFormField(
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            label: Text('Password'),
-                          ),
-                          keyboardType: TextInputType.visiblePassword,
-                          validator: (value) {
-                            if (value == null ||
-                                value.trim().isEmpty ||
-                                value.length < 8) {
-                              return 'Please must be atleast 8 characters long';
-                            }
-                          },
-                          onSaved: (newValue) {
-                            enteredPassword = newValue!;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        ElevatedButton(
-                          onPressed: _submit,
-                          child: Text(isLogin ? 'Login' : 'Sign Up'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              isLogin = !isLogin;
-                            });
-                          },
-                          child: Text(isLogin
-                              ? 'Create an account'
-                              : 'I already Have an account'),
-                        )
-                      ],
-                    ),
+                  Text('Never forget your pills'),
+                  SizedBox(
+                    width: 8,
                   ),
+                  Icon(Icons.alarm_on_outlined),
                 ],
+              ),
+            ],
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.inversePrimary),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 7, horizontal: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Theme.of(context).colorScheme.background,
+                  ),
+                  margin: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                label: Text('Email Address'),
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              textCapitalization: TextCapitalization.none,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.trim().isEmpty ||
+                                    !value.contains('@')) {
+                                  return 'Please enter valid email address';
+                                }
+                              },
+                              onSaved: (newValue) {
+                                enteredEmail = newValue!;
+                              },
+                            ),
+                            TextFormField(
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                label: Text('Password'),
+                              ),
+                              keyboardType: TextInputType.visiblePassword,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.trim().isEmpty ||
+                                    value.length < 8) {
+                                  return 'Please must be atleast 8 characters long';
+                                }
+                              },
+                              onSaved: (newValue) {
+                                enteredPassword = newValue!;
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
+                              onPressed: _submit,
+                              child: Text(isLogin ? 'Login' : 'Sign Up'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  isLogin = !isLogin;
+                                });
+                              },
+                              child: Text(isLogin
+                                  ? 'Create an account'
+                                  : 'I already Have an account'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
+  }
+
+  Future<void> _addUserToDatabase(User user) async {
+    await _database.child('users').child(user.uid).set({
+      'email': user.email,
+    });
   }
 }
