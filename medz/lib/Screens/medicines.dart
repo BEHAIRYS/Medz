@@ -3,7 +3,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:medz/Classes/Medicine.dart';
-import 'package:medz/Providers/MedicineProvider.dart';
 import 'package:medz/Screens/auth.dart';
 
 import 'package:medz/Screens/mainScreen.dart';
@@ -24,7 +23,7 @@ User? user = _firebase.currentUser;
 class _Medicines_state extends State<Medicines> {
   @override
   Widget build(BuildContext context) {
-    final medList = Provider.of<MedicineProvider>(context).medicines;
+    final medList = [];
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       appBar: AppBar(
@@ -32,7 +31,7 @@ class _Medicines_state extends State<Medicines> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) {
-                  return MainScreen();
+                  return const MainScreen();
                 }),
               );
             },

@@ -100,48 +100,45 @@ class MedicineInfo extends StatelessWidget {
       body: Container(
         margin: const EdgeInsets.all(10),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Column(
+            Row(
               children: [
-                Row(
-                  children: [
-                    const Text('Medicine Name:'),
-                    Text(med.name),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text('Expiry Date:'),
-                    Text(med.date),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text('Number of doses per day:'),
-                    Text(
-                      med.dozes.toString(),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await scheduleAlarm(context);
-                      if (context.mounted) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) {
-                            return Medicines();
-                          }),
-                        );
-                      }
-                    },
-                    child: const Text('Set Reminder'),
-                  ),
+                const Text('Medicine Name:'),
+                Text(med.name),
+              ],
+            ),
+            Row(
+              children: [
+                const Text('Expiry Date:'),
+                Text(med.date),
+              ],
+            ),
+            Row(
+              children: [
+                const Text('Number of doses per day:'),
+                Text(
+                  med.dozes.toString(),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  await scheduleAlarm(context);
+                  if (context.mounted) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) {
+                        return Medicines();
+                      }),
+                    );
+                  }
+                },
+                child: const Text('Set Reminder'),
+              ),
             ),
           ],
         ),
