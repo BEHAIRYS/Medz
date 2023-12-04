@@ -7,6 +7,7 @@ import 'package:medz/Screens/auth.dart';
 
 import 'package:medz/Screens/mainScreen.dart';
 import 'package:medz/Widgets/medItem.dart';
+import 'package:medz/main.dart';
 
 class Medicines extends StatefulWidget {
   const Medicines({super.key});
@@ -45,7 +46,7 @@ class _Medicines_state extends State<Medicines> {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) {
-                    return const AuthScreen();
+                    return MyApp();
                   },
                 ),
               );
