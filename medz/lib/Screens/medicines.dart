@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
 import 'package:medz/Classes/Medicine.dart';
 import 'package:medz/Providers/MedicineProvider.dart';
 import 'package:medz/Screens/auth.dart';
+
 import 'package:medz/Screens/mainScreen.dart';
 import 'package:medz/Widgets/medItem.dart';
-import 'package:provider/provider.dart';
 
 class Medicines extends StatefulWidget {
   const Medicines({super.key});

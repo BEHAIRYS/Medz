@@ -133,8 +133,7 @@ class MedicineInfo extends StatelessWidget {
                       if (context.mounted) {
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) {
-                            saveMedicine(med);
-                            return const Medicines();
+                            return Medicines();
                           }),
                         );
                       }
@@ -148,20 +147,5 @@ class MedicineInfo extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> saveMedicine(Medicine medicine) async {
-    if (user != null) {
-      await _database
-          .child('users')
-          .child(user!.uid)
-          .child('medicines')
-          .push()
-          .set({
-        'name': medicine.name,
-        'expiryDate': formatter.format(medicine.expiryDate),
-        'dose': medicine.dozes,
-      });
-    }
   }
 }
