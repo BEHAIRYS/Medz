@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medz/Data/dummy_meds.dart';
+import 'package:medz/Providers/MedicineProvider.dart';
 import 'package:medz/Screens/mainScreen.dart';
 import 'package:medz/Widgets/medItem.dart';
+import 'package:provider/provider.dart';
 
 class Medicines extends StatefulWidget {
   const Medicines({super.key});
@@ -13,9 +15,9 @@ class Medicines extends StatefulWidget {
 }
 
 class _Medicines_state extends State<Medicines> {
-  final medList = dummyMeds;
   @override
   Widget build(BuildContext context) {
+    final medList = Provider.of<MedicineProvider>(context).medicines;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       appBar: AppBar(

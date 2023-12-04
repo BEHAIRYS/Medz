@@ -18,5 +18,6 @@ class Medicine {
         expiryDate: DateFormat("dd/MM/yyyy").parse(json['expiryDate']),
         dozes: int.tryParse(json['dose'])!);
   }
+
   Medicine({required this.name, required this.expiryDate, required this.dozes});
 }

@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medz/Classes/NotificationService.dart';
+import 'package:medz/Providers/MedicineProvider.dart';
 import 'package:medz/Screens/auth.dart';
 import 'package:medz/Screens/loadingScreen.dart';
-import 'package:medz/Screens/mainScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:medz/Screens/medicines.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 import 'package:timezone/standalone.dart' as tz;
@@ -23,7 +24,12 @@ void main() async {
   await NotificationService.initialize();
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation('Africa/Cairo'));
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MedicineProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

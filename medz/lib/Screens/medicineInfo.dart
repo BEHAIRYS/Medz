@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:medz/Classes/Medicine.dart';
 import 'package:medz/Classes/NotificationService.dart';
+import 'package:medz/Providers/MedicineProvider.dart';
 import 'package:medz/Screens/medicines.dart';
-import 'package:timezone/standalone.dart';
+import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class MedicineInfo extends StatelessWidget {
@@ -125,7 +126,8 @@ class MedicineInfo extends StatelessWidget {
                       if (context.mounted) {
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) {
-                            return Medicines();
+                            _addNewMedicine(med, context);
+                            return const Medicines();
                           }),
                         );
                       }
@@ -139,5 +141,11 @@ class MedicineInfo extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _addNewMedicine(Medicine medicine, BuildContext context) {
+    var medicineProvider =
+        Provider.of<MedicineProvider>(context, listen: false);
+    medicineProvider.addMedicine(medicine);
   }
 }
